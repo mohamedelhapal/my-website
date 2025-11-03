@@ -1,0 +1,335 @@
+/* ============================
+   style.css — ملف CSS احترافي
+   جاهز للاستخدام: متجاوب، عصري، ومهيأ للوحات ضوء/ظلام
+   ============================ */
+
+/* ----------: العام والمتغيرات :---------- */
+:root{
+  /* ألوان قابلة للتعديل */
+  --bg: #0f1724;                /* خلفية افتراضية (سحب للظلام) */
+  --surface: #0b1220;           /* لون السطح العام */
+  --card: #0f1724;
+  --text: #e6eef8;
+  --muted: #9fb0c8;
+  --accent: #4f46e5;            /* أزرق بنفسجي */
+  --accent-2: #06b6d4;          /* سماوي بديل */
+  --success: #16a34a;
+  --danger: #ef4444;
+  --glass: rgba(255,255,255,0.06);
+
+  /* مقاسات */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --gap-sm: 0.5rem;
+  --gap-md: 1rem;
+  --gap-lg: 1.5rem;
+
+  /* تباعد افتراضي */
+  --site-padding: clamp(1rem, 2vw, 2rem);
+
+  /* خطوط */
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Monaco, "Roboto Mono", monospace;
+
+  /* رسوميات */
+  --elevation-1: 0 6px 18px rgba(2,6,23,0.6);
+  --elevation-2: 0 10px 40px rgba(2,6,23,0.7);
+  --transition: 180ms cubic-bezier(.2,.9,.2,1);
+}
+
+/* وضع ضوء/ظلام تلقائي على حسب الصفحة (يمكن تبديله بإضافة class على body) */
+:root[data-theme="light"]{
+  --bg: #f7fafc;
+  --surface: #ffffff;
+  --card: #ffffff;
+  --text: #0b1220;
+  --muted: #6b7280;
+  --accent: #2563eb;
+  --accent-2: #0891b2;
+  --glass: rgba(11,18,32,0.04);
+  --elevation-1: 0 6px 18px rgba(11,18,32,0.06);
+  --elevation-2: 0 10px 40px rgba(11,18,32,0.08);
+}
+
+/* ----------: CSS Reset خفيف ومرن :---------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: var(--font-sans);
+  background: linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 90%, transparent) 100%);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.45;
+  font-size: 16px;
+}
+
+img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto; }
+
+button { font: inherit; cursor: pointer; }
+
+a { color: inherit; text-decoration: none; }
+
+/* ----------: الحاوية الأساسية (Layout) :---------- */
+.container{
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--site-padding);
+  padding-right: var(--site-padding);
+}
+
+/* نظام شبكة مرن بسيط */
+.row{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-md);
+}
+.col{
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
+/* مفاتيح العرض (Grid utility) */
+.col-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
+.col-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+.col-3 { flex: 0 0 25%; max-width: 25%; }
+.col-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+.col-6 { flex: 0 0 50%; max-width: 50%; }
+
+/* ----------: الترويسة / Navbar :---------- */
+.header{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(6px);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 72%, transparent) 0%, transparent 100%);
+  border-bottom: 1px solid color-mix(in srgb, var(--text) 6%, transparent);
+  box-shadow: var(--elevation-1);
+}
+.header-inner{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-md);
+  padding: calc(var(--site-padding) / 1.2);
+}
+
+/* شعار */
+.brand{
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.brand .logo{
+  width: 40px; height: 40px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: inline-grid; place-items: center;
+  color: white; font-weight: 700; box-shadow: var(--elevation-1);
+}
+
+/* قائمة الروابط */
+.nav{
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.nav a {
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  color: var(--text);
+  font-weight: 600;
+  transition: background var(--transition), transform var(--transition);
+}
+.nav a:hover { background: var(--glass); transform: translateY(-3px); }
+
+/* زر CTA */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.95rem;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: white;
+  box-shadow: 0 8px 30px color-mix(in srgb, var(--accent) 24%, transparent);
+  transition: transform var(--transition), box-shadow var(--transition);
+  border: none;
+}
+.btn:active { transform: translateY(1px) scale(0.998); }
+.btn.secondary{
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+  color: var(--text);
+  box-shadow: none;
+}
+
+/* ----------: Hero / Banner :---------- */
+.hero{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gap-lg);
+  align-items: center;
+  padding: calc(var(--site-padding) * 1.5) 0;
+}
+.hero-inner{
+  display: flex;
+  gap: var(--gap-lg);
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card{
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 92%, transparent), var(--surface));
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--elevation-2);
+  border: 1px solid color-mix(in srgb, var(--text) 6%, transparent);
+}
+
+/* عنوان وتفاصيل */
+.h1 {
+  font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+  line-height: 1.05;
+  margin: 0 0 0.6rem 0;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.lead{
+  color: var(--muted);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* ----------: بطاقات (Cards) :---------- */
+.card{
+  background: var(--card);
+  padding: 1.25rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--elevation-1);
+  border: 1px solid color-mix(in srgb, var(--text) 4%, transparent);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.card:hover{ transform: translateY(-6px); box-shadow: var(--elevation-2); }
+
+.card .title{ font-weight: 700; margin-bottom: 0.5rem; }
+.card .desc{ color: var(--muted); font-size: 0.95rem; }
+
+/* ----------: أزرار صغيرة و أيقونات :---------- */
+.icon-btn{
+  display:inline-grid;
+  place-items:center;
+  width:40px;height:40px;border-radius:10px;border:1px solid color-mix(in srgb,var(--text)6%,transparent);
+  background:transparent; transition: all var(--transition);
+}
+.icon-btn:hover { transform: translateY(-4px); background: var(--glass); }
+
+/* ----------: بطاقات ميزة (Feature) :---------- */
+.features{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+  gap: var(--gap-lg);
+}
+.feature{
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 96%, transparent), var(--surface));
+  border: 1px solid color-mix(in srgb, var(--text) 4%, transparent);
+}
+
+/* ----------: نماذج (Forms) :---------- */
+.form{
+  display: grid;
+  gap: 0.75rem;
+}
+.input, textarea, select{
+  width:100%;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--text) 3%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 6%, transparent);
+  color: var(--text);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+.input:focus, textarea:focus, select:focus{
+  outline: none;
+  box-shadow: 0 8px 30px color-mix(in srgb, var(--accent) 12%, transparent);
+  transform: translateY(-2px);
+}
+label { font-weight: 600; font-size: 0.95rem; color: var(--muted); }
+
+/* ----------: جدول أسعار (Pricing) مثال :---------- */
+.pricing{
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.pricing .plan{
+  padding: 1.25rem;
+  border-radius: var(--radius-md);
+  text-align: center;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.pricing .plan.recom { transform: translateY(-10px); box-shadow: var(--elevation-2); border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent); }
+
+/* ----------: تذييل الصفحة :---------- */
+.footer{
+  padding: calc(var(--site-padding) * 1.2) 0;
+  border-top: 1px solid color-mix(in srgb, var(--text) 4%, transparent);
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* ----------: نظم مساعدة Utilities :---------- */
+.mt-1{ margin-top: .5rem; } .mt-2{ margin-top: 1rem; } .mt-3{ margin-top: 1.5rem; }
+.mb-1{ margin-bottom: .5rem; } .mb-2{ margin-bottom: 1rem; } .mb-3{ margin-bottom: 1.5rem; }
+
+.text-muted{ color: var(--muted); }
+.text-center{ text-align: center; }
+
+.flex{ display:flex; } .items-center{ align-items:center; } .justify-center{ justify-content:center; }
+.gap-sm{ gap: var(--gap-sm); } .gap-md{ gap: var(--gap-md); } .gap-lg{ gap: var(--gap-lg); }
+
+/* ----------: أنيميشنات خفيفة للتحميل (skeleton) :---------- */
+.skeleton{
+  background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+  border-radius: 8px;
+}
+@keyframes shimmer {
+  0%{ background-position: 200% 0; }
+  100%{ background-position: -200% 0; }
+}
+
+/* ----------: الوصول والقراءة (Accessibility) :---------- */
+:focus{ outline: 3px solid color-mix(in srgb, var(--accent) 18%, transparent); outline-offset: 2px; }
+.visually-hidden{
+  position: absolute !important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); white-space:nowrap;
+}
+
+/* ----------: استجابة (Responsive Breakpoints) :---------- */
+@media (min-width: 720px){
+  .hero{ grid-template-columns: 1fr 420px; }
+  .nav{ gap: 1rem; }
+}
+@media (min-width: 1024px){
+  .container{ max-width: 1180px; }
+}
+
+/* ----------: تحسينات للطباعة ---------- */
+@media print{
+  body{ background: #fff; color: #111; }
+  .header, .footer, .btn, .icon-btn { display: none !important; }
+  .container{ padding: 0; }
+}
+
+/* ----------: مساعدة لتبديل الثيم عبر class على body ---------- */
+/* استخدم: <body data-theme="light"> لتفعيل الثيم الفاتح */

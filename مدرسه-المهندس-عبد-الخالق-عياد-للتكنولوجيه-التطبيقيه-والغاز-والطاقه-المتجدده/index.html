@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title id="docTitle">مدرسة المهندس عبد الخالق عياد — التكنولوجيا التطبيقية</title>
+  <meta name="description" content="مدرسة: تخصصي غاز وطاقه شمسية — معرض، شركاء، وتواصل" />
+  <style>
+    /* --------- Root / Reset --------- */
+    :root{
+      --bg:#0f1724; --surface:#0b1220; --text:#e6eef8; --muted:#9fb0c8;
+      --accent:#0a7f39; --accent-2:#1f7de2;
+      --pad:clamp(1rem,2vw,2rem);
+      --radius:12px;
+      --card-shadow: 0 12px 40px rgba(2,6,23,0.65);
+      --transition:200ms;
+      --carousel-speed: 40s; /* مدة الدورة الكاملة — كلما أصغر أسرع */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, "Segoe UI", Arial; background:linear-gradient(180deg,var(--bg) 0%, color-mix(in srgb,var(--bg) 90%, transparent) 100%); color:var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
+    img,svg{display:block;max-width:100%;height:auto}
+    a{color:inherit;text-decoration:none}
+
+    .container{max-width:1180px;margin:0 auto;padding:0 var(--pad)}
+
+    /* Header */
+    header{position:sticky;top:0;z-index:80;background:linear-gradient(180deg,color-mix(in srgb,var(--surface) 76%,transparent),transparent);backdrop-filter: blur(6px);border-bottom:1px solid rgba(255,255,255,0.04);box-shadow:var(--card-shadow)}
+    .header-inner{display:flex;align-items:center;justify-content:space-between;padding:calc(var(--pad)/1.1);gap:1rem}
+    .brand{display:flex;gap:.75rem;align-items:center}
+    .brand img{width:52px;height:52px;border-radius:999px;object-fit:cover;box-shadow:0 8px 24px rgba(0,0,0,.55)}
+    nav a{margin-inline:6px;padding:.45rem .7rem;border-radius:10px;font-weight:600;transition: background var(--transition), transform var(--transition)}
+    nav a:hover{background:rgba(255,255,255,0.03);transform:translateY(-2px)}
+
+    .lang-switch{display:flex;gap:.4rem}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.55rem .9rem;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;cursor:pointer}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06); color:var(--text)}
+
+    /* Hero */
+    .hero{padding:clamp(2.6rem,5vw,5.2rem) 0;text-align:center; position:relative}
+    .hero .bg{position:absolute;inset:0;background:url('واجه المحافظ.jpg') center/cover no-repeat;filter:brightness(.46);z-index:0}
+    .hero .inner{position:relative;z-index:2;max-width:980px;margin:0 auto;color:#fff}
+    .hero .logo{width:120px;height:120px;border-radius:999px;object-fit:cover;margin:0 auto 1rem;box-shadow:0 14px 40px rgba(0,0,0,.6)}
+    .h1{font-size:clamp(1.6rem,2.6vw,2.4rem);margin:0 0 .5rem;font-weight:800}
+    .lead{color:#dbe9ff;margin:0 auto 1rem;max-width:840px}
+
+    /* Specialties centered */
+    section{padding:2.2rem 0}
+    .specialties-center{display:flex;gap:1.25rem;justify-content:center;align-items:flex-start;flex-wrap:wrap;margin-top:1rem}
+    .spec-card{width:360px;background:linear-gradient(180deg,rgba(11,18,32,0.96),rgba(11,18,32,1));padding:1.05rem;border-radius:var(--radius);box-shadow:var(--card-shadow);cursor:pointer;transition:transform var(--transition)}
+    .spec-card:hover{transform:translateY(-8px)}
+    .spec-card img{width:100%;height:180px;object-fit:cover;border-radius:10px;margin-bottom:.6rem}
+    .spec-title{font-weight:700;margin:0}
+    .spec-desc{color:var(--muted);margin:6px 0 0}
+
+    /* Modal */
+    .modal-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);z-index:9999;padding:1.2rem}
+    .modal{width:clamp(320px,92vw,920px);background:var(--surface);color:var(--text);border-radius:12px;padding:1.1rem;box-shadow:0 18px 60px rgba(0,0,0,.65);max-height:90vh;overflow:auto}
+    .modal h3{margin-top:0}
+    .modal .thumbs{display:flex;gap:.5rem;margin-top:.6rem;overflow-x:auto}
+    .modal .thumbs img{width:110px;height:70px;object-fit:cover;border-radius:8px;cursor:pointer;border:2px solid transparent}
+    .modal .thumbs img.active{border-color:var(--accent);transform:scale(1.03)}
+
+    /* Contact */
+    .contact-card{max-width:980px;margin:0 auto;background:linear-gradient(180deg,rgba(11,18,32,0.96),rgba(11,18,32,1));padding:1.1rem;border-radius:12px;box-shadow:var(--card-shadow)}
+    .contact-grid{display:grid;grid-template-columns:1fr 360px;gap:1rem;align-items:start}
+    @media(max-width:900px){.contact-grid{grid-template-columns:1fr}}
+    .input, textarea{width:100%;padding:.75rem;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text);margin-bottom:.6rem}
+
+    /* Footer */
+    footer{padding:2rem 0;text-align:center;color:var(--muted)}
+
+    /* ===== Continuous carousel (CSS) =====
+       Technique:
+       - .carousel-track contains slides repeated twice in HTML
+       - animate translateX from 0 -> -50% linearly, infinite
+       - no jump because content is duplicated and animation is perfectly periodic
+    */
+    .carousel{overflow:hidden;border-radius:12px;background:linear-gradient(180deg,rgba(11,18,32,0.96),rgba(11,18,32,1));box-shadow:var(--card-shadow);padding:.6rem 0;margin-top:1rem}
+    .carousel-track{display:flex;align-items:center;gap:12px;min-width:200%; /* ensure enough width */ animation: scroll var(--carousel-speed) linear infinite}
+    .carousel-item{flex:0 0 auto;border-radius:10px;overflow:hidden;background:#07101a;box-shadow:0 8px 20px rgba(0,0,0,.5)}
+    /* sizes */
+    .gallery .carousel-item{width:320px;height:200px}
+    .partners .carousel-item{width:150px;height:110px;padding:8px;display:flex;align-items:center;justify-content:center;background:transparent}
+    .partners .carousel-item img{max-width:100%;max-height:100%;object-fit:contain;filter:grayscale(.08);transition:transform var(--transition),filter var(--transition)}
+    .partners .carousel-item:hover img,.partners .carousel-item:focus-within img{transform:scale(1.08);filter:grayscale(0)}
+
+    /* pause animation on hover / focus for accessibility */
+    .carousel:hover .carousel-track,
+    .carousel:focus-within .carousel-track { animation-play-state: paused; }
+
+    @keyframes scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* small screen */
+    @media(max-width:900px){
+      .gallery .carousel-item{width:260px;height:160px}
+      .spec-card{width:320px}
+      .partners .carousel-item{width:120px;height:90px}
+    }
+
+    :focus{outline:3px solid rgba(10,127,57,0.14);outline-offset:3px}
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="لوجو المدرسه.jpg" alt="logo" />
+        <div>
+          <div id="schoolName" style="font-weight:700">مدرسة المهندس عبد الخالق عياد</div>
+          <div id="schoolTag" style="font-size:.85rem;color:var(--muted)">للتكنولوجيا التطبيقية والغاز والطاقة المتجددة</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:.6rem">
+        <nav aria-label="Main">
+          <a href="#home" data-i18n="nav.home">الرئيسية</a>
+          <a href="#specialties" data-i18n="nav.specs">التخصصات</a>
+          <a href="#gallery" data-i18n="nav.gallery">المعرض</a>
+          <a href="#partners" data-i18n="nav.partners">الشركاء</a>
+          <a href="#contact" data-i18n="nav.contact">تواصل</a>
+        </nav>
+
+        <div class="lang-switch" role="toolbar" aria-label="language">
+          <button id="langAr" class="btn secondary" aria-pressed="true">العربية</button>
+          <button id="langEn" class="btn secondary" aria-pressed="false">English</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <main>
+    <section class="hero" id="home">
+      <div class="bg" aria-hidden="true"></div>
+      <div class="inner container">
+        <img class="logo" src="لوجو المدرسه.jpg" alt="logo">
+        <h1 class="h1" data-i18n="hero.title">مدرسة المهندس عبد الخالق عياد للتكنولوجيا التطبيقية</h1>
+        <p class="lead" data-i18n="hero.lead">تخصصان عمليان: <strong>غاز</strong> و<strong>طاقة شمسية</strong> — تعليم تطبيقي ومشروعات مع شركاء الصناعة.</p>
+      </div>
+    </section>
+
+    <!-- Specialties centered -->
+    <section id="specialties" class="container">
+      <h2 class="section-title" data-i18n="specs.title">التخصصات</h2>
+      <div class="specialties-center" role="list">
+        <div class="spec-card" tabindex="0" role="button" data-type="gas" aria-label="هندسة الغاز">
+          <img src="images/gas1.jpg" alt="gas">
+          <div class="spec-title" data-i18n="specs.gas.title">هندسة الغاز الطبيعي</div>
+          <div class="spec-desc" data-i18n="specs.gas.desc">برنامج عملي لتشغيل وصيانة أنظمة الغاز والمحطات.</div>
+        </div>
+
+        <div class="spec-card" tabindex="0" role="button" data-type="solar" aria-label="الطاقة الشمسية">
+          <img src="images/solar1.jpg" alt="solar">
+          <div class="spec-title" data-i18n="specs.solar.title">الطاقة الشمسية والمتجددة</div>
+          <div class="spec-desc" data-i18n="specs.solar.desc">تصميم وتنفيذ أنظمة شمسية وتخزين الطاقة وصيانتها.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery: continuous carousel -->
+    <section id="gallery" class="container">
+      <h2 class="section-title" data-i18n="gallery.title">معرض الصور</h2>
+
+      <div class="carousel gallery" aria-roledescription="carousel" aria-label="معرض صور المدرسة">
+        <div class="carousel-track">
+          <!-- ORIGINAL SET -->
+          <div class="carousel-item"><img src="images/hero.jpg" alt="واجهة المدرسة"></div>
+          <div class="carousel-item"><img src="images/gas1.jpg" alt="مشروع غاز"></div>
+          <div class="carousel-item"><img src="images/solar1.jpg" alt="مشروع شمسي"></div>
+          <div class="carousel-item"><img src="images/gas2.jpg" alt="طلاب"></div>
+          <div class="carousel-item"><img src="images/solar2.jpg" alt="تركيب"></div>
+          <!-- DUPLICATE SET (important for seamless loop) -->
+          <div class="carousel-item"><img src="الواجهه المحافظ.jpg" alt="واجهة المدرسة"></div>
+          <div class="carousel-item"><img src="images/gas1.jpg" alt="مشروع غاز"></div>
+          <div class="carousel-item"><img src="images/solar1.jpg" alt="مشروع شمسي"></div>
+          <div class="carousel-item"><img src="images/gas2.jpg" alt="طلاب"></div>
+          <div class="carousel-item"><img src="images/solar2.jpg" alt="تركيب"></div>
+        </div>
+      </div>
+     <!--<div style="margin-top:.6rem;color:var(--muted);text-align:center">الحركة تتوقف عند الوقوف بالمؤشر أو التركيز</div>--> 
+    </section>
+
+    <!-- Partners: continuous carousel smaller items -->
+    <section id="partners" class="container">
+      <h2 class="section-title" data-i18n="partners.title">شركاؤنا </h2>
+
+      <div class="carousel partners" aria-roledescription="carousel" aria-label="شركاء المدرسة">
+        <div class="carousel-track">
+          <!-- ORIGINAL -->
+          <div class="carousel-item"><img src="ابو بكر.png" alt="مؤسسه ابو بكر لتنميه التعليم الفني والتكنولجيا التطبيقيه"></div>
+          <div class="carousel-item"><img src="التعليم الفني.png" alt="وزاره التربيه والتعليم والتعليم الفني"></div>
+          <div class="carousel-item"><img src="الصناعات المصريه.png" alt="اتحاد الصناعات المصريه"></div>
+          <div class="carousel-item"><img src="الغرفه الامانيه.jpg" alt="Balanc ED"></div>
+          <div class="carousel-item"><img src="وزاره المدارس اللتكنولوجيه.jpg " alt="وحده واداره تشغيل مدارس التكنولوجياالتطبيقيه"></div>
+          <!-- DUP -->
+          <div class="carousel-item"><img src="ابو بكر.png" alt="مؤسسه ابو بكر لتنميه التعليم الفني والتكنولجيا التطبيقيه"></div>
+          <div class="carousel-item"><img src="التعليم الفني.png" alt="وزاره التربيه والتعليم والتعليم الفني"></div>
+          <div class="carousel-item"><img src="الصناعات المصريه.png" alt="اتحاد الصناعات المصريه"></div>
+          <div class="carousel-item"><img src="الغرفه الامانيه.jpg" alt="Balanc ED"></div>
+          <div class="carousel-item"><img src="وزاره المدارس اللتكنولوجيه.jpg" alt="وحده واداره تشغيل مدارس التكنولوجياالتطبيقيه"></div>
+        </div>
+      </div>
+     <!--<div style="margin-top:.6rem;color:var(--muted);text-align:center">تحرك تلقائي وسلس — يتوقف عند الوقوف</div> <div style="margin-top:.6rem;color:var(--muted);text-align:center">تحرك تلقائي وسلس — يتوقف عند الوقوف</div>-->
+    </section>
+
+    <!-- Contact big box -->
+    <section id="contact" class="container">
+      <h2 class="section-title" data-i18n="contact.title">اتصل بنا</h2>
+      <div class="contact-card">
+        <div class="contact-grid">
+          <div>
+            <form id="contactForm" aria-label="نموذج تواصل">
+              <label for="name" data-i18n="contact.name">الاسم</label>
+              <input id="name" class="input" type="text" required>
+
+              <label for="email" data-i18n="contact.email">البريد الإلكتروني</label>
+              <input id="email" class="input" type="email" required>
+
+              <label for="phone" data-i18n="contact.phone">رقم الهاتف</label>
+              <input id="phone" class="input" type="tel">
+
+              <label for="message" data-i18n="contact.msg">الرسالة</label>
+              <textarea id="message" class="input" rows="5" required></textarea>
+
+              <button class="btn" type="submit" data-i18n="contact.send">أرسل الرسالة</button>
+            </form>
+          </div>
+
+          <aside style="padding:1rem;border-radius:10px;background:rgba(255,255,255,0.02)">
+            <h3 data-i18n="contact.infoTitle">بيانات المدرسة</h3>
+            <p data-i18n="contact.addr">📍 العنوان: المحلة الكبرى - محافظة الغربية - جمهورية مصر العربية</p>
+            <p>📧 <a href="mailto:info@school.com" id="emailLink">info@school.com</a></p>
+            <p>📞 <a href="tel:+201000000000" id="phoneLink">0100 000 0000</a></p>
+            <p data-i18n="contact.hours">⏰ مواعيد العمل: السبت - الخميس 8:00 — 16:00</p>
+            <div style="margin-top:1rem">
+              <a class="btn secondary" href="https://maps.google.com" target="_blank" rel="noopener" data-i18n="contact.map">عرض على الخريطة</a>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container" style="text-align:center;color:var(--muted)">
+        © <span id="year"></span> <span id="schoolNameFooter">مدرسة المهندس عبد الخالق عياد</span> — <span data-i18n="footer.rights">جميع الحقوق محفوظة</span>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Modal for specialties -->
+  <div class="modal-backdrop" id="specModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="specTitle" tabindex="-1">
+      <button id="modalCloseTop" class="btn secondary" style="float:left">إغلاق</button>
+      <h3 id="specTitle"></h3>
+      <p id="specDesc" style="color:var(--muted)"></p>
+      <div id="specGallery" style="display:flex;gap:.5rem;margin-top:.6rem;overflow:auto"></div>
+      <div id="specExtras" style="margin-top:.8rem;color:var(--muted)"></div>
+      <div style="display:flex;justify-content:flex-end;margin-top:1rem">
+        <button id="modalClose" class="btn">حسناً</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ---------------- i18n data (Arabic + English) ---------------- */
+    const siteData = {
+      ar: {
+        title: "مدرسة المهندس عبد الخالق عياد — التكنولوجيا التطبيقية",
+        hero: {title:"مدرسة المهندس عبد الخالق عياد للتكنولوجيا التطبيقية", lead:"تخصصان عمليان: غاز و طاقة شمسية — تعليم تطبيقي ومشروعات مع شركاء الصناعة."},
+        nav: {home:"الرئيسية", specs:"التخصصات", gallery:"المعرض", partners:"الشركاء", contact:"تواصل"},
+        specs:{title:"التخصصات", gas:{title:"هندسة الغاز الطبيعي", desc:"برنامج عملي لتشغيل وصيانة أنظمة الغاز."}, solar:{title:"الطاقة الشمسية والمتجددة", desc:"تصميم وتنفيذ أنظمة شمسية وتخزين الطاقة."}},
+        gallery:{title:"معرض الصور"},
+        partners:{title:"شركاؤنا الصناعيون"},
+        contact:{title:"اتصل بنا", name:"الاسم", email:"البريد الإلكتروني", phone:"رقم الهاتف", msg:"الرسالة", send:"أرسل الرسالة", infoTitle:"بيانات المدرسة", addr:"📍 العنوان: المحلة الكبرى - محافظة الغربية - جمهورية مصر العربية", hours:"⏰ مواعيد العمل: السبت - الخميس 8:00 — 16:00"},
+        footer:{rights:"جميع الحقوق محفوظة"}
+      },
+      en: {
+        title: "Eng. Abdel Khalek Ayad School — Applied Technology",
+        hero: {title:"Eng. Abdel Khalek Ayad School for Applied Technology", lead:"Two practical programs: Gas & Solar Energy — applied learning and industry projects."},
+        nav: {home:"Home", specs:"Specialties", gallery:"Gallery", partners:"Partners", contact:"Contact"},
+        specs:{title:"Specialties", gas:{title:"Natural Gas Engineering", desc:"Hands-on program for operating and maintaining gas systems."}, solar:{title:"Solar & Renewable Energy", desc:"Design and installation of solar systems and energy storage."}},
+        gallery:{title:"Gallery"},
+        partners:{title:"Our Partners"},
+        contact:{title:"Contact Us", name:"Name", email:"Email", phone:"Phone", msg:"Message", send:"Send Message", infoTitle:"School Info", addr:"📍 Address: El-Mahalla El-Kubra, Al-Gharbiya Governorate, Egypt", hours:"⏰ Working hours: Sat-Thu 8:00 — 16:00"},
+        footer:{rights:"All rights reserved"}
+      }
+    };
+
+    /* ------------ language toggle (no reload) ------------ */
+    let lang = 'ar';
+    const el_i18n = document.querySelectorAll('[data-i18n]');
+    function applyLang(to){
+      lang = to;
+      const data = siteData[to];
+      document.getElementById('docTitle').textContent = data.title;
+      // set many fields
+      document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const key = el.getAttribute('data-i18n'); // e.g. "nav.home"
+        const parts = key.split('.');
+        let v = data;
+        for(const p of parts){ v = (v && p in v) ? v[p] : null; }
+        if(v !== null && v !== undefined){
+          el.textContent = v;
+        }
+      });
+      // change header school name and tag
+      if(to === 'ar'){
+        document.getElementById('schoolName').textContent = "مدرسة المهندس عبد الخالق عياد";
+        document.getElementById('schoolTag').textContent = "للتكنولوجيا التطبيقية والغاز والطاقة المتجددة";
+        document.documentElement.lang = 'ar';
+        document.documentElement.dir = 'rtl';
+        document.getElementById('langAr').setAttribute('aria-pressed', 'true');
+        document.getElementById('langEn').setAttribute('aria-pressed', 'false');
+      } else {
+        document.getElementById('schoolName').textContent = "Eng. Abdel Khalek Ayad School";
+        document.getElementById('schoolTag').textContent = "Applied Technology • Gas & Renewable Energy";
+        document.documentElement.lang = 'en';
+        document.documentElement.dir = 'ltr';
+        document.getElementById('langAr').setAttribute('aria-pressed', 'false');
+        document.getElementById('langEn').setAttribute('aria-pressed', 'true');
+      }
+      // footer year
+      document.getElementById('year').textContent = new Date().getFullYear();
+    }
+    document.getElementById('langAr').addEventListener('click', ()=> applyLang('ar'));
+    document.getElementById('langEn').addEventListener('click', ()=> applyLang('en'));
+    applyLang(lang);
+
+    /* ------------ Specialty modal logic ------------ */
+    const specModal = document.getElementById('specModal');
+    const specTitle = document.getElementById('specTitle');
+    const specDesc = document.getElementById('specDesc');
+    const specGallery = document.getElementById('specGallery');
+    const specExtras = document.getElementById('specExtras');
+
+    const specData = {
+      gas: {
+        images: ['images/gas1.jpg','images/gas2.jpg','images/gas3.jpg'],
+        extras: ['مدة الدراسة: سنتان / 3 سنوات','متطلبات: شهادة إعدادية أو الثانوية الفنية','مسؤول الاتصال: د. محمد — gas@school.com']
+      },
+      solar: {
+        images: ['images/solar1.jpg','images/solar2.jpg','images/solar3.jpg'],
+        extras: ['مدة الدراسة: سنتان / 3 سنوات','متطلبات: مستوى جيد في الرياضيات والكهرباء الأساسية','مسؤول الاتصال: م. سارة — solar@school.com']
+      }
+    };
+
+    function openSpec(type){
+      const data = siteData[lang].specs[type];
+      specTitle.textContent = data.title;
+      specDesc.textContent = data.desc;
+      specGallery.innerHTML = '';
+      (specData[type].images||[]).forEach(src=>{
+        const i = document.createElement('img');
+        i.src = src; i.alt = ''; i.style.width='220px'; i.style.height='140px'; i.style.objectFit='cover'; i.style.borderRadius='8px';
+        specGallery.appendChild(i);
+      });
+      specExtras.innerHTML = '';
+      (specData[type].extras||[]).forEach(t=>{
+        const p = document.createElement('p'); p.textContent = t; p.style.margin='6px 0'; p.style.color='var(--muted)';
+        specExtras.appendChild(p);
+      });
+      specModal.style.display = 'flex'; specModal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+      document.querySelector('.modal').focus();
+    }
+    function closeSpec(){ specModal.style.display='none'; specModal.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+
+    document.getElementById('modalCloseTop').addEventListener('click', closeSpec);
+    document.getElementById('modalClose').addEventListener('click', closeSpec);
+    specModal.addEventListener('click', (e)=> { if(e.target === specModal) closeSpec(); });
+    document.addEventListener('keydown', (e)=> { if(e.key === 'Escape') closeSpec(); });
+
+    document.querySelectorAll('.spec-card').forEach(el=>{
+      el.addEventListener('click', ()=> openSpec(el.dataset.type));
+      el.addEventListener('keydown', (e)=> { if(e.key==='Enter' || e.key===' ') openSpec(el.dataset.type); });
+    });
+
+    /* ------------ Contact form (demo) ------------ */
+    document.getElementById('contactForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const name = document.getElementById('name').value || '';
+      alert((lang==='ar' ? 'شكراً ' + name + '! تم إرسال رسالتك (تجريبي).' : 'Thanks ' + (name || '') + '! Your message has been sent (demo).'));
+      this.reset();
+    });
+
+    /* ------------ Accessibility: pause CSS animation on keyboard focus is already supported via :focus-within rule in CSS above ------------ */
+
+    /* set current year */
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
